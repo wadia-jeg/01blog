@@ -1,0 +1,110 @@
+backend/
+├── auth/
+│   ├── AuthController.java
+│   ├── AuthService.java
+│   ├── AuthRepository.java
+│   ├── dto/
+│   │   ├── LoginRequest.java
+│   │   └── RegisterRequest.java
+│   └── model/
+│       └── User.java
+├── users/
+│   ├── UserController.java
+│   ├── UserService.java
+│   ├── UserRepository.java
+│   └── model/UserProfile.java
+├── posts/
+│   ├── PostController.java
+│   ├── PostService.java
+│   ├── PostRepository.java
+│   └── model/Post.java
+├── comments/
+│   ├── CommentController.java
+│   ├── CommentService.java
+│   ├── CommentRepository.java
+│   └── model/Comment.java
+├── reports/
+├── admin/
+├── config/
+└── Application.java
+
+
+
+01blog-frontend/
+│
+├── src/app/
+│   ├── core/                          # Services used across the app
+│   │   ├── auth.service.ts
+│   │   ├── post.service.ts
+│   │   ├── user.service.ts
+│   │   ├── report.service.ts
+│   │   └── admin.service.ts
+│   │
+│   ├── models/                        # TypeScript interfaces / models
+│   │   ├── user.model.ts
+│   │   ├── post.model.ts
+│   │   ├── comment.model.ts
+│   │   └── report.model.ts
+│   │
+│   ├── auth/                          # Login/Register
+│   │   ├── login/
+│   │   └── register/
+│   │
+│   ├── pages/                         # Feature-based pages
+│   │   ├── home/                       # Feed for subscribed posts
+│   │   ├── profile/                    # User block pages
+│   │   ├── post/                       # Create/Edit posts
+│   │   └── admin-dashboard/            # Admin panel
+│   │
+│   ├── shared/                        # Reusable components
+│   │   ├── navbar/
+│   │   ├── footer/
+│   │   ├── post-card/
+│   │   ├── comment-section/
+│   │   ├── notification/
+│   │   └── report-modal/
+│   │
+│   ├── app-routing.module.ts           # Routing
+│   └── app.module.ts
+│
+├── angular.json
+└── package.json
+
+
+[ Angular Frontend ]  <--HTTP/REST-->  [ Spring Boot Backend ]  <--JPA/SQL-->  [ Database ]
+       |                                      |                              |
+       |                                      |                              |
++----------------+                    +----------------+               +----------------+
+| Components     |                    | Controllers    |               | Users Table    |
+| - Home Feed    |<------------------>| - Auth         |               | - id, username |
+| - Profile      |    JSON requests   | - User         |               | - email       |
+| - Post CRUD    |                    | - Post         |               | - password    |
+| - Comments     |                    | - Comment      |               | - role        |
+| - Admin Panel  |                    | - Report       |               +----------------+
++----------------+                    | - Admin        |
+                                       +----------------+
+       |                                      |
+       |                                      |
++----------------+                    +----------------+
+| Services       |<------------------>| Services       |
+| - auth.service |  call backend APIs  | - AuthService  |
+| - user.service |                    | - UserService  |
+| - post.service |                    | - PostService  |
+| - report.service|                   | - ReportService|
++----------------+                    +----------------+
+       |                                      |
+       |                                      |
++----------------+                    +----------------+
+| Models / DTOs  |                    | Entities / DTOs|
+| - User         |                    | - User         |
+| - Post         |                    | - Post         |
+| - Comment      |                    | - Comment      |
+| - Report       |                    | - Report       |
++----------------+                    +----------------+
+       |                                      |
+       |                                      |
++----------------+                    +----------------+
+| Angular Material|                    | Spring Security|
+| - UI Components|                    | - JWT          |
+| - Forms       |                    | - Role Access  |
++----------------+                    +----------------+

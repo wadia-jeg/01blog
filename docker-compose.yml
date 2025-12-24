@@ -1,0 +1,75 @@
+# version: '3.8'
+
+# services:
+#   app:
+#     build:
+#       context: .
+#       dockerfile: dockerfile
+#     ports:
+#       - "8080:8080"
+#     depends_on:
+#       - db
+#     networks:
+#       - network
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres-db
+#       SPRING_DATASOURCE_USERNAME: postgres
+#       SPRING_DATASOURCE_PASSWORD: postgres
+
+#   db:
+#     image: postgres
+#     container_name: postgres-db
+#     environment:
+#       POSTGRES_USER: username
+#       POSTGRES_PASSWORD: password
+#       POSTGRES_DB: postgres-db
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - db_data:/var/lib/postgresql
+#     networks:
+#       - network
+
+# volumes:
+#   db_data:
+
+# networks:
+#   network:
+
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      - db
+    networks:
+      - network
+    environment:
+      SPRING_DATASOURCE_URL: ${POSTGRESDB_CONTAINER_URL}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRESDB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRESDB_PASSWORD}
+
+  db:
+    image: postgres
+    container_name: 01blog-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRESDB_USER}
+      POSTGRES_PASSWORD: ${POSTGRESDB_PASSWORD}
+      POSTGRES_DB: blog-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql
+    networks:
+      - network
+
+volumes:
+  db_data:
+
+networks:
+  network:

@@ -1,0 +1,118 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+
+Table users {
+  id integer [primary key]
+  username varchar [not null, unique]
+  email varchar [not null, unique]
+  password_hash varchar [not null]
+  role roles [default: roles.REGULAR, not null]
+  age integer
+  gender varchar
+  speciality varchar
+  is_banned bool [default: false]
+  created_at timestamp
+}
+
+Table posts {
+  id integer [primary key]
+  user_id integer [ref: > users.id, not null ]
+  title text [not null]
+  content text [not null]
+  is_deleted bool [default: false]
+  created_at timestamp [not null]
+}
+
+Table post_media {
+  id integer [primary key]
+  post_id integer [ref: > posts.id, not null]
+  media_type media_type [not null] 
+  media_url varchar [not null]
+  position integer
+  created_at timestamp [not null]
+}
+
+
+Table comments {
+  id integer [primary key]
+  content text [not null]
+  media_url varchar
+  user_id integer [ref: > users.id, not null]
+  post_id integerr [ref: > posts.id, not null]
+  created_at timestamp [not null]
+}
+
+Table likes {
+  id integer [primary key]
+  user_id integer [ref: > users.id, not null]
+  post_id integer [ref: > posts.id, not null]
+  comment_id integer [ref: > comments.id, not null]
+  created_at timestamp
+
+  indexes {
+    (user_id, post_id) [unique]
+    (user_id, comment_id) [unique]
+  }
+}
+
+Table follows {
+  id integer [primary key]
+  following_user_id integer [ref: > users.id, not null]
+  followed_user_id integer [ref: > users.id, not null]
+  created_at timestamp [not null]
+
+  indexes {
+    (following_user_id, followed_user_id) [unique]
+  }
+}
+
+Table notifications {
+  id integer [primary key]
+  sender_id integer [ref: > users.id, not null]
+  receiver_id integer [ref: > users.id, not null]
+  type notification_type [not null] 
+  entity_id integer
+  message varchar
+  is_read bool [default: false]
+  created_at timestamp [not null]
+}
+
+Table reports{
+  id integer [primary key]
+  reporter_user_id integer [ref: > users.id, not null]
+  reported_user_id integer [ref: > users.id, not null]
+  reported_post_id integer [ref: > posts.id, not null]
+  reason varchar [not null]
+  status report_status [default: report_status.PENDING, not null]
+  created_at timestamp [not null]
+}
+
+enum roles{
+  "ADMIN"
+  "REGULAR"
+}
+
+
+enum notification_type{
+  "POST"
+  "FOLLOW"
+  "COMMENT"
+}
+
+
+enum report_status{
+  "PENDING"
+  "RESOLVED"
+  "CANCELED"
+}
+
+enum media_type {
+  "IMAGE"
+  "VIDEO"
+}
+
+
+
+
+
