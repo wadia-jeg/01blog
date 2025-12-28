@@ -1,7 +1,6 @@
-package com.zone._blog.posts;
+package com.zone._blog.comments;
 
 import java.time.LocalDateTime;
-// import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,17 +8,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Post{
+public class Comment{
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private Integer id;
-    
-    private Integer userId;
-    private String title;
+
+    private Integer commentI;
+    private Integer postId;
     private String content;
     private LocalDateTime createdAt;
-    // private List<Like> likes;
-    // private List<Comment> comments;
-    private boolean isDeleted;
+
 }
