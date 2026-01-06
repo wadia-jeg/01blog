@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zone._blog.posts.dto.PostRequest;
 import com.zone._blog.posts.dto.PostResponse;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+
 @RestController
 @RequestMapping("/posts")
 public class PostController {
@@ -33,23 +36,23 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable UUID id) {
-        return ResponseEntity.ok(this.postService.getPost(id));
+    public ResponseEntity<PostResponse> getPost(@PathVariable String id) {
+        return ResponseEntity.ok(this.postService.getPost(UUID.fromString(id)));
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest postRequest) {
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest postRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.postService.createPost(postRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostResponse> updatePost(@RequestBody PostRequest postRequest, @PathVariable UUID id) {
-        return ResponseEntity.ok(this.postService.updatePost(id, postRequest));
+    public ResponseEntity<PostResponse> updatePost(@Valid @RequestBody PostRequest postRequest, @NotBlank(message = "To update a post you must have an id") @PathVariable String id) {
+        return ResponseEntity.ok(this.postService.updatePost(UUID.fromString(id), postRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable UUID id) {
-        this.postService.deletePost(id);
+    public ResponseEntity<Void> deletePost(@NotBlank(message = "To delete a post you must have an id") @PathVariable String id) {
+        this.postService.deletePost(UUID.fromString(id));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

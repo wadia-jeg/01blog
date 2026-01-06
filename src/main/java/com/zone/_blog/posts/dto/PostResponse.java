@@ -15,7 +15,7 @@ public class PostResponse {
 
     private Instant createdAt;
 
-    private boolean isDeleted = false;
+    private boolean isDeleted;
 
     protected PostResponse() {
     }
@@ -28,13 +28,6 @@ public class PostResponse {
         this.createdAt = createdAt;
     }
 
-    // public static PostResponse from(Post post) {
-    //     UUID userId = post.getUser() != null ? post.getUser().getId() : null;
-    //     return new PostResponse(post.getId(), userId, post.getTitle(), post.getContent(), post.getCreatedAt());
-    // }
-    // public static PostResponse from(PostRequest postRequest) {
-    //     return new PostResponse(postRequest.getId(), postRequest.getUserId(), postRequest.getTitle(), postRequest.getContent(), postRequest.getCreatedAt());
-    // }
     public UUID getId() {
         return this.id;
     }

@@ -40,7 +40,7 @@ public class Post {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    private boolean isDeleted = false;
+    private boolean isDeleted;
 
     protected Post() {
     }

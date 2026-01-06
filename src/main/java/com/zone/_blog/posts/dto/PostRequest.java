@@ -3,20 +3,31 @@ package com.zone._blog.posts.dto;
 import java.time.Instant;
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class PostRequest {
 
-// add final if the feilds won't change
+    // add final if the feilds won't change
+    @NotNull(message = "Post must have an id")
     private UUID id;
 
+    @NotNull(message = "Post must have a user id")
     private UUID userId;
 
+    @NotBlank(message = "Post must have a title")
+    @Size(min = 5, max = 200, message = "Post title must have at least 5 charcters and no more than 200")
     private String title;
 
+    @NotBlank(message = "Post must have content")
+    @Size(min = 5, max = 20000, message = "Post title must have at least 5 charcters and no more than 200")
     private String content;
 
+    @NotNull(message = "Post must have a creation date")
     private Instant createdAt;
 
-    private boolean isDeleted = false;
+    private boolean isDeleted;
 
     protected PostRequest() {
     }
@@ -29,13 +40,6 @@ public class PostRequest {
         this.createdAt = createdAt;
     }
 
-    // public static PostRequest from(Post post) {
-    //     UUID userId = post.getUser() != null ? post.getUser().getId() : null;
-    //     return new PostRequest(post.getId(), userId, post.getTitle(), post.getContent(), post.getCreatedAt());
-    // }
-    // public static PostRequest from(PostResponse postResponse) {
-    //     return new PostRequest(postResponse.getId(), postResponse.getUserId(), postResponse.getTitle(), postResponse.getContent(), postResponse.getCreatedAt());
-    // }
     public UUID getId() {
         return this.id;
     }
@@ -78,7 +82,7 @@ public class PostRequest {
 
     @Override
     public String toString() {
-        return String.format("Post Dto[\n  id = %s,\n  title = %s,\n   content = %s,\n   creation date = %s]", this.getId(), this.getTitle(), this.getContent(), this.getCreatedAt());
+        return String.format("Post Dto[\n  id = %s,\n  title = %s,\n   content = %s,\n   creation date = %s]", this.getId(), this.getTitle(), this.getContent(), this.getCreatedAt().toString());
     }
 
 }
