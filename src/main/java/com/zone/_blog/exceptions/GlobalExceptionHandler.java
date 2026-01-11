@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -28,9 +29,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    // Method Not Allowed
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handelHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                exception.getMessage(),
+                HttpStatus.METHOD_NOT_ALLOWED.value(),
+                exception.getMessage(),
+                exception.getCause()
+        );
+
+        System.out.println(errorResponse.toString());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
     // Bad Resquest Errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handelValidationError(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorResponse> handelValidationException(MethodArgumentNotValidException exception) {
         ErrorResponse errorResponse = new ErrorResponse(
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),

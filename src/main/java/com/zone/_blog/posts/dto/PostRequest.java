@@ -1,6 +1,5 @@
 package com.zone._blog.posts.dto;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
@@ -10,10 +9,7 @@ import jakarta.validation.constraints.Size;
 public class PostRequest {
 
     // add final if the feilds won't change
-    @NotNull(message = "Post must have an id")
-    private UUID id;
-
-    @NotNull(message = "Post must have a user id")
+    // @NotNull(message = "Post must have a user id")
     private UUID userId;
 
     @NotBlank(message = "Post must have a title")
@@ -24,24 +20,15 @@ public class PostRequest {
     @Size(min = 5, max = 20000, message = "Post title must have at least 5 charcters and no more than 200")
     private String content;
 
-    @NotNull(message = "Post must have a creation date")
-    private Instant createdAt;
-
     private boolean isDeleted;
 
     protected PostRequest() {
     }
 
-    public PostRequest(UUID id, UUID userId, String title, String content, Instant createdAt) {
-        this.id = id;
+    public PostRequest(UUID userId, String title, String content) {
         this.userId = userId;
         this.title = title;
         this.content = content;
-        this.createdAt = createdAt;
-    }
-
-    public UUID getId() {
-        return this.id;
     }
 
     public String getTitle() {
@@ -58,10 +45,6 @@ public class PostRequest {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Instant getCreatedAt() {
-        return this.createdAt;
     }
 
     public UUID getUserId() {
@@ -82,7 +65,7 @@ public class PostRequest {
 
     @Override
     public String toString() {
-        return String.format("Post Dto[\n  id = %s,\n  title = %s,\n   content = %s,\n   creation date = %s]", this.getId(), this.getTitle(), this.getContent(), this.getCreatedAt().toString());
+        return String.format("Post Dto[\n  title = %s,\n   content = %s,\n   creation date = %s]", this.getTitle(), this.getContent());
     }
 
 }

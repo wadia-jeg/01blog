@@ -6,8 +6,10 @@ import java.util.UUID;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.zone._blog.media.Media;
 import com.zone._blog.users.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -16,6 +18,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -29,6 +32,10 @@ public class Post {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "media_id")
+    private Media media;
 
     @Column(nullable = false)
     private String title;
@@ -45,22 +52,14 @@ public class Post {
     protected Post() {
     }
 
-    public Post(UUID id, User user, String title, String content, Instant createdAt) {
-        this.id = id;
+    public Post(User user, String title, String content, Instant createdAt, Media media) {
         this.user = user;
         this.title = title;
         this.content = content;
+        this.media = media;
         this.createdAt = createdAt;
     }
 
-    // public static Post from(PostResponse postResponse, UserRepository userRepository) {
-    //     User user = userRepository.getReferenceById(postResponse.getUserId());
-    //     return new Post(postResponse.getId(), user, postResponse.getTitle(), postResponse.getContent(), postResponse.getCreatedAt());
-    // }
-    // public static Post from(PostRequest postRequest, UserRepository userRepository) {
-    //     User user = userRepository.getReferenceById(postRequest.getUserId());
-    //     return new Post(postRequest.getId(), user, postRequest.getTitle(), postRequest.getContent(), postRequest.getCreatedAt());
-    // }
     public UUID getId() {
         return this.id;
     }
@@ -85,6 +84,14 @@ public class Post {
         this.content = content;
     }
 
+    public Media getMedia() {
+        return this.media;
+    }
+
+    public void setMedia(Media media) {
+        this.media = media;
+    }
+
     public Instant getCreatedAt() {
         return this.createdAt;
     }
@@ -107,7 +114,7 @@ public class Post {
 
     @Override
     public String toString() {
-        return String.format("Post Entity[\n  id = %s,\n  title = %s,\n   content = %s,\n   creation date = %s]", this.getId(), this.getTitle(), this.getContent(), this.getCreatedAt());
+        return String.format("Post Entity[\n  id = %s,\n  title = %s,\n   content = %s,\n   creation date = %s\n    media = %s]", this.getId(), this.getTitle(), this.getContent(), this.getCreatedAt(), this.getMedia().toString());
     }
 
 }

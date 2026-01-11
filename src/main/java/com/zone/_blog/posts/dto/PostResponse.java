@@ -3,6 +3,8 @@ package com.zone._blog.posts.dto;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.zone._blog.media.dto.MediaDto;
+
 public class PostResponse {
 
     private UUID id;
@@ -13,6 +15,8 @@ public class PostResponse {
 
     private String content;
 
+    private UUID media;
+
     private Instant createdAt;
 
     private boolean isDeleted;
@@ -20,12 +24,13 @@ public class PostResponse {
     protected PostResponse() {
     }
 
-    public PostResponse(UUID id, UUID userId, String title, String content, Instant createdAt) {
+    public PostResponse(UUID id, UUID userId, String title, String content, Instant createdAt, UUID media) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
+        this.media = media;
     }
 
     public UUID getId() {
@@ -46,6 +51,14 @@ public class PostResponse {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public UUID getMedia() {
+        return this.media;
+    }
+
+    public void setMedia(UUID media) {
+        this.media = media;
     }
 
     public Instant getCreatedAt() {
@@ -70,7 +83,7 @@ public class PostResponse {
 
     @Override
     public String toString() {
-        return String.format("Post Dto[\n  id = %s,\n  title = %s,\n   content = %s,\n   creation date = %s]", this.getId(), this.getTitle(), this.getContent(), this.getCreatedAt());
+        return String.format("Post Response[\n  id = %s,\n  title = %s,\n   content = %s,\n   creation date = %s\n    media = %s]", this.getId(), this.getTitle(), this.getContent(), this.getCreatedAt(), this.getMedia().toString());
     }
 
 }
