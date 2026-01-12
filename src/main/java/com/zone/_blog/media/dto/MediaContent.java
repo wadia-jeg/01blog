@@ -45,8 +45,4 @@ public record MediaContent(
         return size;
     }
 
-    public void setSize(long size) {
-        size = size;
-    }
-
 }
