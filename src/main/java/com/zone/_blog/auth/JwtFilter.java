@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     public boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.equals("/login") || path.equals("/register");
+        return path.equals("${app.api.v1}/auth/login") || path.equals("${app.api.v1}/users/register") || path.equals("/error");
     }
 
     @Override
@@ -49,7 +49,8 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 username = jwtService.extractUsername(token);
             } catch (IllegalArgumentException | JwtException e) {
-                filterChain.doFilter(request, response);
+                System.out.println("Authurization error " + e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
         }

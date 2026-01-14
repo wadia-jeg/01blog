@@ -2,14 +2,15 @@ package com.zone._blog.auth;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.zone._blog.users.UserInfo;
+
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -18,22 +19,22 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtService {
 
-    private final String SECRET = "5367566859703373367639792F423F452848284D6251655468576D5A71347437";
-    private Key signatureKey;
-    private long experation;
+    @Value("${spring-security.jwt.secret}")
+    private String SECRET;
+
+    @Value("${spring-security.jwt.issuer}")
     private String issuer;
 
-    public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return this.createToken(claims, username);
-    }
+    @Value("${spring-security.jwt.expiration}")
+    private long expiration;
 
-    public String createToken(Map<String, Object> claims, String username) {
+    public String generateToken(UserInfo user) {
+
         return Jwts.builder()
-                .addClaims(claims)
-                .setSubject(username)
+                .setIssuer(this.issuer)
+                .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + this.expiration))
                 .signWith(this.getSignatureKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -43,26 +44,29 @@ public class JwtService {
         return Keys.hmacShaKeyFor(key);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        Claims claims = this.extractClaims(token);
-        return claimsResolver.apply(claims);
-
-    }
-
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(this.getSignatureKey())
+                .setAllowedClockSkewSeconds(60)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
     public String extractUsername(String token) {
-        return this.extractClaim(token, Claims::getSubject);
+        try {
+            return this.extractClaims(token).getSubject();
+        } catch (Exception e) {
+            throw new JwtException("Error extarcting username");
+        }
     }
 
     public Date extractExpiration(String token) {
-        return this.extractClaim(token, Claims::getExpiration);
+        try {
+            return this.extractClaims(token).getExpiration();
+        } catch (Exception e) {
+            throw new JwtException("Error extarcting token expiration time");
+        }
     }
 
     public boolean isTokenExpired(String token) {

@@ -7,7 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.zone._blog.media.Media;
-import com.zone._blog.users.User;
+import com.zone._blog.users.UserInfo;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,8 +18,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -31,9 +31,9 @@ public class Post {
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserInfo user;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "media_id")
     private Media media;
 
@@ -52,7 +52,7 @@ public class Post {
     protected Post() {
     }
 
-    public Post(User user, String title, String content, Instant createdAt, Media media) {
+    public Post(UserInfo user, String title, String content, Instant createdAt, Media media) {
         this.user = user;
         this.title = title;
         this.content = content;
@@ -96,11 +96,11 @@ public class Post {
         return this.createdAt;
     }
 
-    public User getUser() {
+    public UserInfo getUser() {
         return this.user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserInfo user) {
         this.user = user;
     }
 

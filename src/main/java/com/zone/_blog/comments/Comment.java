@@ -6,17 +6,16 @@ import java.util.UUID;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.zone._blog.posts.Post;
-import com.zone._blog.users.User;
+import com.zone._blog.users.UserInfo;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
 
 @Entity
 public class Comment {
@@ -31,8 +30,8 @@ public class Comment {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
-    
+    private UserInfo user;
+
     @Column(nullable = false)
     private String content;
 
@@ -40,43 +39,44 @@ public class Comment {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    protected Comment() {}
+    protected Comment() {
+    }
 
-    public Comment(User user, Post post, String content){
+    public Comment(UserInfo user, Post post, String content) {
         this.user = user;
         this.post = post;
         this.content = content;
     }
 
-    public UUID getId(){
+    public UUID getId() {
         return this.id;
     }
 
-    public String getContent(){
+    public String getContent() {
         return this.content;
     }
-    
-    public void setContent(String content){
+
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public Instant getCreatedAt(){
+    public Instant getCreatedAt() {
         return this.createdAt;
     }
 
-    public User getUser(){
+    public UserInfo getUser() {
         return this.user;
     }
 
-    public void setuser(User user){
+    public void setuser(UserInfo user) {
         this.user = user;
     }
 
-    public Post getPost(){
+    public Post getPost() {
         return this.post;
     }
 
-    public void setPost(Post post){
+    public void setPost(Post post) {
         this.post = post;
     }
 }

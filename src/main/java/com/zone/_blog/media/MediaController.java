@@ -19,7 +19,7 @@ import com.zone._blog.media.dto.MediaContent;
 import com.zone._blog.media.dto.MediaDto;
 
 @RestController
-@RequestMapping("/api/v1/media")
+@RequestMapping("${app.api.v1}/media")
 public class MediaController {
 
     private final MediaService mediaService;

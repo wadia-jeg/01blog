@@ -10,27 +10,28 @@ import org.springframework.web.multipart.MultipartFile;
 import com.zone._blog.exceptions.ResourceNotFoundException;
 import com.zone._blog.media.MediaMapper;
 import com.zone._blog.media.MediaService;
-import com.zone._blog.media.dto.MediaContent;
 import com.zone._blog.media.dto.MediaDto;
 import com.zone._blog.posts.dto.PostRequest;
 import com.zone._blog.posts.dto.PostResponse;
-import com.zone._blog.users.UserRepository;
+import com.zone._blog.users.UserInfo;
+import com.zone._blog.users.UserMapper;
+import com.zone._blog.users.UserService;
 
 @Service
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-    // private final UserRepository userRepository;
+    private final UserService userService;
     private final MediaService mediaService;
 
     public PostServiceImpl(
             PostRepository postRepository,
-            UserRepository userRepository,
+            UserService userService,
             MediaService mediaService
     ) {
 
         this.postRepository = postRepository;
-        // this.userRepository = userRepository;
+        this.userService = userService;
         this.mediaService = mediaService;
     }
 
@@ -53,15 +54,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-
     public PostResponse createPost(PostRequest postRequest, MultipartFile media) {
 
-        // User user = this.userRepository.getReferenceById(postRequest.getUserId());
-        // if (user == null) {
-        //     throw new ResourceNotFoundException("User " + postRequest.getUserId() + "not found");
-        // }
-        MediaDto mediaDto = this.mediaService.saveMedia(media);
-        Post postEntity = PostMapper.toPost(postRequest, null, MediaMapper.toMedia(mediaDto));
+        UserInfo currentUser = UserMapper.toUser(this.userService.getCurrentUser());
+
+        if (currentUser == null) {
+            throw new ResourceNotFoundException("User " + postRequest.getUserId() + "not found");
+        }
+
+        Post postEntity = PostMapper.toPost(postRequest, null);
+        if (media != null) {
+
+            MediaDto mediaDto = this.mediaService.saveMedia(media);
+            postEntity.setMedia(MediaMapper.toMedia(mediaDto));
+        }
         this.postRepository.save(postEntity);
 
         return PostMapper.toPostResponse(postEntity);
@@ -69,16 +75,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-
     public PostResponse updatePost(UUID postId, PostRequest postRequest, MultipartFile media) {
         Post postEntity = this.postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post " + postId + "not found")
         );
 
-        MediaDto mediaDto = this.mediaService.saveMedia(media);
+        if (media != null) {
+            MediaDto mediaDto = this.mediaService.updateMedia(media, postEntity.getMedia().getId());
+            postEntity.setMedia(MediaMapper.toMedia(mediaDto));
+        }
 
         postEntity.setTitle(postRequest.getTitle());
         postEntity.setContent(postRequest.getContent());
-        postEntity.setMedia(MediaMapper.toMedia(mediaDto));
         this.postRepository.save(postEntity);
 
         return PostMapper.toPostResponse(postEntity);

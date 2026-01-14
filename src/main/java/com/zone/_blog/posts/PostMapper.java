@@ -4,13 +4,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import com.zone._blog.media.Media;
-import com.zone._blog.media.MediaMapper;
-import com.zone._blog.media.dto.MediaContent;
-import com.zone._blog.media.dto.MediaDto;
 import com.zone._blog.posts.dto.PostRequest;
 import com.zone._blog.posts.dto.PostResponse;
-import com.zone._blog.users.User;
+import com.zone._blog.users.UserInfo;
 
 @Component
 public class PostMapper {
@@ -23,8 +19,9 @@ public class PostMapper {
                 userId,
                 post.getTitle(),
                 post.getContent(),
+                post.getMedia() != null ? post.getMedia().getId() : null,
                 post.getCreatedAt(),
-                post.getMedia() != null ? post.getMedia().getId() : null
+                post.getIsDeleted()
         );
     }
 
@@ -37,20 +34,8 @@ public class PostMapper {
         );
     }
 
-    public static Post toPost(PostResponse postResponse, User user, Media media) {
-
-        return new Post(
-                user,
-                postResponse.getTitle(),
-                postResponse.getContent(),
-                postResponse.getCreatedAt(),
-                media
-        );
-
-    }
-
-    public static Post toPost(PostRequest postRequest, User user, Media media) {
-        // User user = this.userRepository.getReferenceById(postRequest.getUserId());
+    public static Post toPost(PostRequest postRequest, UserInfo user) {
+        // UserInfo user = this.userRepository.getReferenceById(postRequest.getUserId());
 
         return new Post(
                 user,

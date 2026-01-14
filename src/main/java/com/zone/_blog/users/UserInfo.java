@@ -6,26 +6,36 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.zone._blog.auth.Role;
+import com.zone._blog.media.Media;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class UserInfo implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @OneToOne
+    @JoinColumn(name = "profilePicture_id")
+    private Media profilePicture;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -50,19 +60,23 @@ public class UserInfo implements UserDetails {
     @Column(nullable = false, updatable = false)
     private Instant joinedAt;
 
+    @Column(nullable = false)
+    private boolean enabled = true;
+
+    @Column(nullable = false)
+    private boolean locked = false;
+
     protected UserInfo() {
     }
 
     public UserInfo(
             String email,
-            String password,
             String username,
             String firstname,
             String lastname,
             Role role
     ) {
         this.email = email;
-        this.password = password;
         this.role = role;
         this.username = username;
         this.firstname = firstname;
@@ -127,16 +141,46 @@ public class UserInfo implements UserDetails {
         this.role = role;
     }
 
+    public Media getProfilePicture() {
+        return this.profilePicture;
+    }
+
+    public void setProfilePicture(Media profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == Role.ADMIN) {
-            return List.of(
-                    new SimpleGrantedAuthority("ROLE_ADMIN"),
-                    new SimpleGrantedAuthority("ROLE_REGULAR")
-            );
-        }
         return List.of(
-                new SimpleGrantedAuthority("ROLE_REGULAR")
+                new SimpleGrantedAuthority("ROLE_" + this.role.name())
         );
     }
 
