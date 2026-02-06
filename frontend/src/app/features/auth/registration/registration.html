@@ -1,0 +1,46 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Welcome to our platform </mat-card-title>
+    <mat-card-subtitle> Where you can find like minded people</mat-card-subtitle>
+  </mat-card-header>
+  <form class="registration-form" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input matInput type="text" formControlName="username" placeholder="Ex. Alcheist1.0" />
+      @if (f.username.dirty || f.username.touched) {
+        <mat-error class="error">{{ getUsernameError() }}.</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" placeholder="Ex. pat@example.com" />
+      @if (f.email.dirty || f.email.touched) {
+        <mat-error class="error">{{ getEmailError() }}</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" />
+      @if (f.password.dirty || f.password.touched) {
+        <mat-error class="error">{{ getPasswordError() }}</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>First name</mat-label>
+      <input matInput type="text" formControlName="firstName" />
+      @if (f.firstName.dirty || f.firstName.touched) {
+        <mat-error class="error">{{ getFirstNameError() }}</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Last name</mat-label>
+      <input matInput type="text" formControlName="lastName" />
+      @if (f.lastName.dirty || f.lastName.touched) {
+        <mat-error class="error">{{ getLastNameError() }}</mat-error>
+      }
+    </mat-form-field>
+    <button mat-button type="submit" [disabled]="registrationForm.invalid">Signup</button>
+  </form>
+</mat-card>
+
+<!-- [errorStateMatcher]="matcher" -->

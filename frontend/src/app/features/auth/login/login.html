@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Welcome to our platform </mat-card-title>
+    <mat-card-subtitle> Where you can find like minded people</mat-card-subtitle>
+  </mat-card-header>
+  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Email or Username</mat-label>
+      <input matInput type="text" formControlName="login" placeholder="Ex. Alcheist1.0" />
+      @if (f.login.dirty || f.login.touched) {
+        <mat-error class="error">{{ getLoginError() }}.</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" />
+      @if (f.password.dirty || f.password.touched) {
+        <mat-error class="error">{{ getPasswordError() }}</mat-error>
+      }
+    </mat-form-field>
+    <button mat-button type="submit" [disabled]="loginForm.invalid">Signin</button>
+  </form>
+  not a member ? go to sign up  
+</mat-card>
+
+<!-- [errorStateMatcher]="matcher" -->
